@@ -2,20 +2,91 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Telegram WebApps API</title>
-     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
 </head>
 <body>
-    <div id="usercard"> <!--Карта профиля, человека, который к нам обратился-->
+
+    <div class="container">
+        <div class="inner">
+
+            <div class="item">
+                <div class="img_block">
+                    <img src="1.png" class="product_img">
+                </div>
+                <div class="header">
+                    <span class="name">fries</span><span class="price">10.15 zl</span>
+                </div>
+                <div>
+                    <button class="btn" id="btn1">add</button>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="img_block">
+                    <img src="2.png" class="product_img">
+                </div>
+                <div class="header">
+                    <span class="name">burger</span><span class="price">15.01 zl</span>
+                </div>
+                <div>
+                    <button class="btn" id="btn2">add</button>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="img_block">
+                    <img src="3.png" class="product_img">
+                </div>
+                <div class="header">
+                    <span class="name">coke</span><span class="price">9.99 zl</span>
+                </div>
+                <div>
+                    <button class="btn" id="btn3">add</button>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="img_block">
+                    <img src="4.png" class="product_img">
+                </div>
+                <div class="header">
+                    <span class="name">pizza</span><span class="price">25 zl</span>
+                </div>
+                <div>
+                    <button class="btn" id="btn4">add</button>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="img_block">
+                    <img src="5.png" class="product_img">
+                </div>
+                <div class="header">
+                    <span class="name">hot dog</span><span class="price">13.8 zl</span>
+                </div>
+                <div>
+                    <button class="btn" id="btn5">add</button>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="img_block">
+                    <img src="6.png" class="product_img">
+                </div>
+                <div class="header">
+                    <span class="name">donut</span><span class="price">5.55 zl</span>
+                </div>
+                <div>
+                    <button class="btn" id="btn6">add</button>
+                </div>
+            </div>
+
+        </div>
     </div>
-    <p>Just text</p> <!--Просто текст для проверки-->
-    <a class="link" href="https://google.com">Link</a> <!--Просто ссылка для проверки-->
-    <p class="hint">Some little hint</p> <!--Просто текст-подсказка для проверки-->
-    <button id="btn" class="button">Show/Hide Main Button</button> <!--Кнопка, чтобы скрыть / показать основную кнопку-->
-    <button id="btnED" class="button">Enable/Disable Main Button</button> <!--Кнопка, чтобы сделать кнопку активной/неактивной-->
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="script.js"></script>
 </body>
-<script src="https://telegram.org/js/telegram-web-app.js"></script> <!--Подключаем скрипт от телеграм-->
-<script src="script.js"></script><!--Подключаем файл с нашим скриптом-->
 </html>
