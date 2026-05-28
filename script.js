@@ -1,48 +1,184 @@
-let tg = window.Telegram.WebApp; //получаем объект webapp телеграма
+let tg = window.Telegram.WebApp;
 
-tg.expand(); //расширяем на все окно
+tg.expand();
 
-tg.MainButton.text = "Changed Text"; //изменяем текст кнопки
-tg.MainButton.setText("Changed Text1"); //изменяем текст кнопки иначе
-tg.MainButton.textColor = "#F55353"; //изменяем цвет текста кнопки
-tg.MainButton.color = "#143F6B"; //изменяем цвет бэкграунда кнопки
-tg.MainButton.setParams({"color": "#143F6B"}); //так изменяются все параметры
+tg.MainButton.textColor = "#FFFFFF";
+tg.MainButton.color = "#2cab37";
 
-let btn = document.getElementById("btn"); //получаем кнопку скрыть/показать
-btn.addEventListener('click', function() { //вешаем событие на нажатие html-кнопки
-    if (tg.MainButton.isVisible) { //если кнопка показана
-        tg.MainButton.hide() //скрываем кнопку
-    } else { //иначе
-        tg.MainButton.show() //показываем
+let item = {
+    burger: 0,
+    fries: 0,
+    pizza: 0,
+    coke: 0,
+    donut: 0,
+    hdog: 0
+};
+
+let prices = {
+    burger: 15.01,
+    fries: 10.15,
+    pizza: 25.00,
+    coke: 9.99,
+    donut: 5.55,
+    hdog: 13.80
+};
+
+let products = ["burger", "fries", "pizza", "coke", "donut", "hdog"];
+
+function countTotal() {
+    let sum = 0;
+
+    for (let key in item) {
+        sum += item[key] * prices[key];
+    }
+
+    return sum;
+}
+
+function updateMainButton() {
+    let total = countTotal();
+
+    if (total > 0) {
+        tg.MainButton.setText("В корзине товаров на " + total.toFixed(2) + " zl. Оплатить");
+        tg.MainButton.show();
+    } else {
+        tg.MainButton.hide();
+    }
+}
+
+function createBadge(productName) {
+    let productButton = document.getElementById(productName);
+    let productBlock = productButton.closest(".item");
+    let imgBlock = productBlock.querySelector(".img_block");
+
+    let badge = document.createElement("div");
+    badge.id = productName + "_badge";
+    badge.classList.add("badge");
+    badge.innerText = item[productName];
+
+    imgBlock.appendChild(badge);
+}
+
+function updateBadge (productName) {
+    let badge = document.getElementById(productName + "_badge");
+
+    if (item[productName] > 0) {
+        if (badge) {
+        badge.innerText = item[productName];
+        } else {
+        createBadge (productName);
+        }
+    } else {
+        if (badge) {
+        badge.remove();
+        }
+    }
+}
+
+function showCounter(productName) {
+
+    let addButton = document.getElementById(productName);
+    let buttonBlock = addButton.parentElement;
+
+    addButton.classList.add("hidden");
+
+    let oldControls = document.getElementById(productName + "_controls");
+    if (oldControls) {
+        oldControls.remove();
+    }
+
+    let controls = document.createElement("div");
+    controls.id = productName + "_controls";
+    controls.classList.add("controls");
+
+    let minusButton = document.createElement("button");
+    minusButton.id = productName + "_minus";
+    minusButton.innerText = "-";
+    minusButton.classList.add("btn_minus");
+
+    let countText = document.createElement("span");
+    countText.id = productName + "_count";
+    countText.classList.add("sum");
+    countText.innerText = (item[productName] * prices[productName]).toFixed(2) + " zl";
+
+    let plusButton = document.createElement("button");
+    plusButton.id = productName + "_plus";
+    plusButton.innerText = "+";
+    plusButton.classList.add("btn_plus");
+
+    controls.appendChild(minusButton);
+    controls.appendChild(countText);
+    controls.appendChild(plusButton);
+
+    buttonBlock.appendChild(controls);
+
+    plusButton.addEventListener("click", function () {
+    item[productName] += 1;
+    updateProduct(productName);
+    });
+
+    minusButton.addEventListener("click", function () {
+        if (item[productName] > 0) {
+            item[productName] -= 1;
+        }
+        updateProduct(productName);
+    });
+}
+
+function hideCounter(productName) {
+    let addButton = document.getElementById(productName);
+    let controls = document.getElementById(productName + "_controls");
+
+    if (controls) {
+        controls.remove();
+    }
+
+    addButton.classList.remove("hidden");
+}
+
+function updateProduct (productName) {
+    if (item[productName] <= 0) {
+        item[productName] = 0;
+        hideCounter (productName);
+    } else {
+        let countText = document.getElementById(productName + "_count");
+        if (countText) {
+        countText.innerText = (item[productName] * prices[productName]).toFixed(2) + " zl";
+        } else {
+        showCounter (productName);
+        }
+    }
+    updateBadge (productName);
+    updateMainButton();
+}
+
+products.forEach(function (productName) {
+    let button = document.getElementById(productName);
+
+    if (button) {
+        button.addEventListener("click", function () {
+        item[productName] = 1;
+        showCounter(productName);
+        updateBadge(productName);
+        updateMainButton();
+        });
     }
 });
 
-let btnED = document.getElementById("btnED"); // получаем кнопку активировать/деактивировать
-btnED.addEventListener('click', function () { // вешаем событие на нажатие html-кнопки
-    if (tg.MainButton.isActive) { // если кнопка показана
-        tg.MainButton.setParams({"color": "#E0FFFF"}); // меняем цвет
-        tg.MainButton.disable(); // скрываем кнопку
+tg.onEvent("mainButtonClicked", function () {
+    let result = "";
+    for (let key in item) {
+        if (item[key] > 0) {
+        result += key + ":" + item[key] + ";";
+        }
     }
-    else{ // иначе
-        tg.MainButton.setParams({"color": "#143F6B"}); // меняем цвет
-        tg.MainButton.enable();// показываем
-    }
+    tg.sendData(result);
 });
 
-Telegram.WebApp.onEvent('mainButtonClicked', function() {
-    tg.sendData("some string that we need to send");
-    //при клике на основную кнопку отправляем данные в строковом виде
-});
+let usercard = document.getElementById("usercard");
 
-let usercard = document.getElementById("usercard"); //получаем блок usercard
-
-let profName = document.createElement('p'); //создаем параграф
-profName.innerText = `${tg.initDataUnsafe.user.first_name}
-${tg.initDataUnsafe.user.last_name}
-${tg.initDataUnsafe.user.username} (${tg.initDataUnsafe.user.language_code})`;
-//выдем имя, "фамилию", через тире username и код языка
-usercard.appendChild(profName); //добавляем
-
-let userid=document.createElement('p'); //создаем еще параграф
-userid.innerText = `${tg.initDataUnsafe.user.id}`; //показываем user_id
-usercard.appendChild(userid); //добавляем
+if (usercard) {
+    let p = document.createElement("p");
+    p.innerText = "Hi!";
+    usercard.appendChild(p);
+}
